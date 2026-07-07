@@ -141,6 +141,10 @@ function sanitizeAttributes(attributes: Record<string, string>): Record<string, 
     }
   }
 
+  if (!sanitized.stroke && hasStrokePresentation(sanitized)) {
+    sanitized.stroke = 'white';
+  }
+
   return sanitized;
 }
 
@@ -154,6 +158,21 @@ function shouldDropAttribute(name: string): boolean {
     normalized.startsWith('on') ||
     normalized.includes('.')
   );
+}
+
+function hasStrokePresentation(attributes: Record<string, string>): boolean {
+  return Object.keys(attributes).some((name) => {
+    const normalized = name.toLowerCase();
+    return (
+      normalized === 'stroke-width' ||
+      normalized === 'stroke-linecap' ||
+      normalized === 'stroke-linejoin' ||
+      normalized === 'stroke-dasharray' ||
+      normalized === 'stroke-dashoffset' ||
+      normalized === 'stroke-miterlimit' ||
+      normalized === 'stroke-opacity'
+    );
+  });
 }
 
 function getDimensions(element: Element): SvgDimensions {

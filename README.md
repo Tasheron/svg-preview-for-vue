@@ -63,7 +63,7 @@ In VS Code or Cursor, you can also use Extensions -> Install from VSIX.
 
 SVG discovery uses an HTML parser and supports multiple SVGs, nested SVGs, regular attributes, and Vue-specific attributes such as `:class`, `:style`, `v-if`, and `v-for`. For rendering previews, Vue directives and event handlers are removed from the static preview copy because they require a Vue runtime context. The original SVG source is preserved for copy and export commands.
 
-Tailwind-style paint classes such as `fill-black`, `fill-white`, `stroke-black`, and arbitrary colors like `fill-[#000]` are normalized for previews so SVGs still render outside the app runtime.
+Tailwind-style paint classes such as `fill-black`, `fill-white`, `stroke-black`, and arbitrary colors like `fill-[#000]` are normalized for previews so SVGs still render outside the app runtime. If Vue-bound classes hide the actual stroke color from the static preview, stroked shapes fall back to a white stroke.
 
 ## Development
 

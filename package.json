@@ -1,6 +1,6 @@
 {
   "name": "svg-preview-for-vue-tasheron",
-  "displayName": "SVG Preview for Vue",
+  "displayName": "SVG Preview for Vue (Tasheron)",
   "description": "Inline previews, hover previews, explorer thumbnails, and export tools for inline SVG in Vue, HTML, JSX, and TSX files.",
   "version": "1.0.0",
   "publisher": "tasheron",

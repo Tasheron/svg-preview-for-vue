@@ -38,7 +38,7 @@ Use the CodeLens actions above each SVG to open the large preview, copy the SVG 
 ## Install From VSIX
 
 ```sh
-cursor --install-extension svg-preview-for-vue-1.0.0.vsix
+cursor --install-extension svg-preview-for-vue-tasheron-1.0.0.vsix
 ```
 
 In VS Code or Cursor, you can also use Extensions -> Install from VSIX.
@@ -76,12 +76,3 @@ npm run compile
 ```
 
 Open the project in VS Code or Cursor and run `Developer: Reload Window` if the extension host is already active. Use `Run Extension` from the extension development host workflow to test the extension interactively.
-
-## Publishing
-
-```sh
-npm run compile
-npm run vsix
-```
-
-Publish with `npm run publish:marketplace` after logging in with `vsce login tasheron`.

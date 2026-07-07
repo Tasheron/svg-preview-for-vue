@@ -1,0 +1,175 @@
+{
+  "name": "svg-preview-for-vue",
+  "displayName": "SVG Preview for Vue",
+  "description": "Inline previews, hover previews, explorer thumbnails, and export tools for inline SVG in Vue, HTML, JSX, and TSX files.",
+  "version": "1.0.0",
+  "publisher": "tasheron",
+  "license": "MIT",
+  "icon": "icons/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tasheron/svg-preview-for-vue.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tasheron/svg-preview-for-vue/issues"
+  },
+  "homepage": "https://github.com/tasheron/svg-preview-for-vue#readme",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "svg",
+    "vue",
+    "preview",
+    "inline svg",
+    "cursor"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:vue",
+    "onLanguage:html",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "svgPreview.openPreview",
+        "title": "SVG Preview: Open Preview",
+        "category": "SVG Preview"
+      },
+      {
+        "command": "svgPreview.refresh",
+        "title": "SVG Preview: Refresh",
+        "category": "SVG Preview",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "svgPreview.exportPng",
+        "title": "SVG Preview: Export PNG",
+        "category": "SVG Preview"
+      },
+      {
+        "command": "svgPreview.copySvg",
+        "title": "SVG Preview: Copy SVG",
+        "category": "SVG Preview"
+      },
+      {
+        "command": "svgPreview.revealSvg",
+        "title": "SVG Preview: Reveal SVG",
+        "category": "SVG Preview"
+      }
+    ],
+    "configuration": {
+      "title": "SVG Preview",
+      "properties": {
+        "svgPreview.previewSize": {
+          "type": "number",
+          "default": 56,
+          "minimum": 24,
+          "maximum": 512,
+          "description": "Inline preview height in pixels."
+        },
+        "svgPreview.background": {
+          "type": "string",
+          "default": "transparent",
+          "enum": [
+            "transparent",
+            "white",
+            "dark"
+          ],
+          "description": "Default preview background."
+        },
+        "svgPreview.showBorder": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a subtle border around inline previews."
+        },
+        "svgPreview.autoRefresh": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically refresh previews as documents change."
+        },
+        "svgPreview.maxPreviewWidth": {
+          "type": "number",
+          "default": 180,
+          "minimum": 80,
+          "maximum": 1200,
+          "description": "Maximum inline preview width in pixels."
+        },
+        "svgPreview.viewBoxBorderColor": {
+          "type": "string",
+          "default": "#4da3ff",
+          "description": "CSS color used for the dashed viewBox border in the large preview."
+        },
+        "svgPreview.clickZoomLevels": {
+          "type": "array",
+          "default": [
+            200,
+            400,
+            600,
+            800,
+            1000
+          ],
+          "items": {
+            "type": "number",
+            "minimum": 101,
+            "maximum": 10000
+          },
+          "description": "Zoom percentages used when clicking the large preview. After the last level, the next click resets to 100%."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "svgPreview",
+          "title": "SVG Explorer",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "svgPreview": [
+        {
+          "id": "svgPreviewExplorer",
+          "name": "SVG Explorer"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "svgPreview.refresh",
+          "when": "view == svgPreviewExplorer",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "npm run check-types && npm run build",
+    "watch": "npm-run-all -p watch:*",
+    "watch:types": "tsc --noEmit --watch --preserveWatchOutput",
+    "watch:build": "node esbuild.js --watch",
+    "build": "node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "package": "node esbuild.js --production"
+  },
+  "dependencies": {
+    "dom-serializer": "^2.0.0",
+    "domhandler": "^5.0.3",
+    "htmlparser2": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@types/vscode": "^1.100.0",
+    "esbuild": "^0.25.4",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.8.3"
+  }
+}

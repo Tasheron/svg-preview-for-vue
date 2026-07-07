@@ -14,6 +14,13 @@
     "url": "https://github.com/tasheron/svg-preview-for-vue/issues"
   },
   "homepage": "https://github.com/tasheron/svg-preview-for-vue#readme",
+  "galleryBanner": {
+    "color": "#2563EB",
+    "theme": "dark"
+  },
+  "extensionKind": [
+    "workspace"
+  ],
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -152,13 +159,16 @@
     }
   },
   "scripts": {
+    "vscode:prepublish": "npm run package",
     "compile": "npm run check-types && npm run build",
     "watch": "npm-run-all -p watch:*",
     "watch:types": "tsc --noEmit --watch --preserveWatchOutput",
     "watch:build": "node esbuild.js --watch",
     "build": "node esbuild.js",
     "check-types": "tsc --noEmit",
-    "package": "node esbuild.js --production"
+    "package": "node esbuild.js --production",
+    "vsix": "vsce package --no-dependencies",
+    "publish:marketplace": "vsce publish --no-dependencies"
   },
   "dependencies": {
     "dom-serializer": "^2.0.0",
@@ -168,6 +178,7 @@
   "devDependencies": {
     "@types/node": "^22.15.3",
     "@types/vscode": "^1.100.0",
+    "@vscode/vsce": "^3.9.2",
     "esbuild": "^0.25.4",
     "npm-run-all": "^4.1.5",
     "typescript": "^5.8.3"

@@ -14,7 +14,9 @@ export function getConfig(): SvgPreviewConfig {
     autoRefresh: config.get<boolean>('autoRefresh', true),
     maxPreviewWidth: clamp(config.get<number>('maxPreviewWidth', 180), 80, 1200),
     viewBoxBorderColor: sanitizeCssColor(config.get<string>('viewBoxBorderColor', '#4da3ff')),
-    clickZoomLevels: sanitizeZoomLevels(config.get<number[]>('clickZoomLevels', [200, 400, 600, 800, 1000]))
+    clickZoomLevels: sanitizeZoomLevels(config.get<number[]>('clickZoomLevels', [200, 400, 600, 800, 1000])),
+    fallbackFillColor: sanitizeCssColor(config.get<string>('fallbackFillColor', 'black'), 'black'),
+    fallbackStrokeColor: sanitizeCssColor(config.get<string>('fallbackStrokeColor', 'white'), 'white')
   };
 }
 
@@ -22,9 +24,9 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function sanitizeCssColor(value: string): string {
+function sanitizeCssColor(value: string, fallback = '#4da3ff'): string {
   const trimmed = value.trim();
-  return /^[#a-zA-Z0-9(),.%\s-]+$/.test(trimmed) ? trimmed : '#4da3ff';
+  return /^[#a-zA-Z0-9(),.%\s-]+$/.test(trimmed) ? trimmed : fallback;
 }
 
 function sanitizeZoomLevels(value: number[]): number[] {

@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import render from 'dom-serializer';
 import { parseDocument } from 'htmlparser2';
 import { ChildNode, Element, isTag } from 'domhandler';
-import { SvgDimensions, SvgPreview } from './types';
+import { getConfig } from './config';
+import { SvgDimensions, SvgPreview, SvgPreviewConfig } from './types';
 
 const supportedLanguageIds = new Set(['vue', 'html', 'typescriptreact', 'javascriptreact']);
 const supportedExtensions = new Set(['.vue', '.html', '.tsx', '.jsx']);
@@ -82,7 +83,8 @@ function collectSvgElements(nodes: ChildNode[], results: Element[]): void {
 }
 
 function sanitizeSvgElement(element: Element): string {
-  const cloned = cloneSafeElement(element);
+  const config = getConfig();
+  const cloned = cloneSafeElement(element, config);
   const dimensions = getDimensions(element);
   cloned.attribs = {
     xmlns: 'http://www.w3.org/2000/svg',
@@ -105,27 +107,27 @@ function sanitizeSvgElement(element: Element): string {
   }).trim();
 }
 
-function cloneSafeElement(element: Element): Element {
-  const cloned = new Element(element.name, sanitizeAttributes(element.attribs ?? {}), []);
-  cloned.children = element.children.flatMap((child) => cloneSafeNode(child));
+function cloneSafeElement(element: Element, config: SvgPreviewConfig): Element {
+  const cloned = new Element(element.name, sanitizeAttributes(element.attribs ?? {}, config), []);
+  cloned.children = element.children.flatMap((child) => cloneSafeNode(child, config));
   return cloned;
 }
 
-function cloneSafeNode(node: ChildNode): ChildNode[] {
+function cloneSafeNode(node: ChildNode, config: SvgPreviewConfig): ChildNode[] {
   if (isTag(node)) {
     if (dangerousElementNames.has(node.name.toLowerCase())) {
       return [];
     }
 
-    return [cloneSafeElement(node)];
+    return [cloneSafeElement(node, config)];
   }
 
   return [node];
 }
 
-function sanitizeAttributes(attributes: Record<string, string>): Record<string, string> {
+function sanitizeAttributes(attributes: Record<string, string>, config: SvgPreviewConfig): Record<string, string> {
   const sanitized: Record<string, string> = {};
-  const classPresentation = presentationFromClassList(attributes.class);
+  const classPresentation = presentationFromClassList(attributes.class, config);
 
   for (const [name, value] of Object.entries(attributes)) {
     if (shouldDropAttribute(name)) {
@@ -142,7 +144,7 @@ function sanitizeAttributes(attributes: Record<string, string>): Record<string, 
   }
 
   if (!sanitized.stroke && hasStrokePresentation(sanitized)) {
-    sanitized.stroke = 'white';
+    sanitized.stroke = config.fallbackStrokeColor;
   }
 
   return sanitized;
@@ -217,7 +219,7 @@ function parseViewBox(value: string | undefined): { width: number; height: numbe
   };
 }
 
-function presentationFromClassList(value: string | undefined): Record<string, string> {
+function presentationFromClassList(value: string | undefined, config: SvgPreviewConfig): Record<string, string> {
   if (!value) {
     return {};
   }
@@ -225,13 +227,13 @@ function presentationFromClassList(value: string | undefined): Record<string, st
   const presentation: Record<string, string> = {};
 
   for (const className of value.split(/\s+/)) {
-    const fill = parsePaintClass(className, 'fill');
+    const fill = parsePaintClass(className, 'fill', config);
     if (fill) {
       presentation.fill = fill;
       continue;
     }
 
-    const stroke = parsePaintClass(className, 'stroke');
+    const stroke = parsePaintClass(className, 'stroke', config);
     if (stroke) {
       presentation.stroke = stroke;
     }
@@ -240,7 +242,7 @@ function presentationFromClassList(value: string | undefined): Record<string, st
   return presentation;
 }
 
-function parsePaintClass(className: string, prefix: 'fill' | 'stroke'): string | undefined {
+function parsePaintClass(className: string, prefix: 'fill' | 'stroke', config: SvgPreviewConfig): string | undefined {
   const exact = `${prefix}-`;
   if (!className.startsWith(exact)) {
     return undefined;
@@ -253,6 +255,14 @@ function parsePaintClass(className: string, prefix: 'fill' | 'stroke'): string |
 
   if (value === 'current') {
     return 'currentColor';
+  }
+
+  if (prefix === 'fill' && value === 'black') {
+    return config.fallbackFillColor;
+  }
+
+  if (prefix === 'stroke' && value === 'white') {
+    return config.fallbackStrokeColor;
   }
 
   if (value === 'black' || value === 'white') {

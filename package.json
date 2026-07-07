@@ -113,6 +113,16 @@
           "default": "#4da3ff",
           "description": "CSS color used for the dashed viewBox border in the large preview."
         },
+        "svgPreview.fallbackFillColor": {
+          "type": "string",
+          "default": "black",
+          "description": "CSS color used when preview normalization needs a fallback fill color, including Tailwind-style fill-black classes."
+        },
+        "svgPreview.fallbackStrokeColor": {
+          "type": "string",
+          "default": "white",
+          "description": "CSS color used when Vue-bound or runtime classes hide the stroke color from the static preview."
+        },
         "svgPreview.clickZoomLevels": {
           "type": "array",
           "default": [

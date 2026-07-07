@@ -10,6 +10,8 @@ export interface SvgPreviewConfig {
   maxPreviewWidth: number;
   viewBoxBorderColor: string;
   clickZoomLevels: number[];
+  fallbackFillColor: string;
+  fallbackStrokeColor: string;
 }
 
 export interface SvgDimensions {
